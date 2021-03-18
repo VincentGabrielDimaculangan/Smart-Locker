@@ -1,0 +1,58 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <title>Zerynth</title>
+        <!-- LOAD JQUERY AND BOOTSTRAP -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- LOAD THE ZERYNTH ADM JS LIBRARY -->
+        <script src="https://api.zerynth.com/zadm/latest/z.js"></script> 
+        <!-- LOAD Flot.js -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.js"></script>
+    </head>        
+    <body>
+        <div style="text-align:center">
+            <p id="status" style="background:#ddd;font-weight:bold"></p>
+            <h1>Oscilloscope</h1>
+            <div id="updating-chart" style="height:300px"></div>
+        </div>
+        <script>
+            var data = []
+            $(document).ready(function () {
+            
+                var plot = $.plot("#updating-chart", [ [] ], {
+                    series: {
+                        shadowSize: 0   // Drawing is faster without shadows
+                    },
+                    yaxis: {
+                        min: 0,
+                        max: 100
+                    },
+                    xaxis: {
+                        show: false
+                    }
+                });
+
+              Z.init({
+                on_connected:  function(){$("#status").html("CONNECTED")},
+                on_error:  function(){$("#status").html("ERROR")},
+                on_disconnected:  function(){$("#status").html("DISCONNECTED"); return true},
+                on_online:  function(evt){$("#status").html("ONLINE");},
+                on_offline:  function(evt){$("#status").html("OFFLINE");},
+                on_event:  function(evt){
+                      console.log(evt)
+                      data.push([data.length,evt.payload.data])
+                    plot.setData([data]);
+                    plot.setupGrid()
+                    plot.draw();
+                }
+              })
+          })
+        </script>
+    </body>
+</html>
