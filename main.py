@@ -116,4 +116,4 @@ while True:
     system_setup()
 
 #se uso inserisci.insert() l'array viene incrementato ogni volta, quindi devo fissare la lunghezza dell'array
-#l'ultimo tasto dà sempre print non so pk
+
